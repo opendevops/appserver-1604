@@ -1,0 +1,4 @@
+zend_extension=xdebug.so
+<% @settings.sort_by {|key, value| key}.each do |key,value| -%>
+xdebug.<%= key %>=<%= value %>
+<% end -%>

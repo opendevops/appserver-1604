@@ -1,0 +1,8 @@
+.idea/
+.vagrant/
+*.log
+www/projects/
+*.stackdump
+
+## Backups
+*.zip

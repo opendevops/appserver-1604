@@ -1,0 +1,45 @@
+[submodule "www/puppet/modules/apache"]
+	path = www/puppet/modules/apache
+	url = https://github.com/opendevops/puppet-apache.git
+[submodule "www/puppet/modules/cache"]
+	path = www/puppet/modules/cache
+	url = https://github.com/opendevops/puppet-cache.git
+[submodule "www/puppet/modules/composer"]
+	path = www/puppet/modules/composer
+	url = https://github.com/opendevops/puppet-composer.git
+[submodule "www/puppet/modules/dashboard"]
+	path = www/puppet/modules/dashboard
+	url = https://github.com/opendevops/puppet-dashboard.git
+[submodule "www/puppet/modules/mysql"]
+	path = www/puppet/modules/mysql
+	url = https://github.com/opendevops/puppet-mysql.git
+[submodule "www/puppet/modules/nodejs"]
+	path = www/puppet/modules/nodejs
+	url = https://github.com/opendevops/puppet-nodejs.git
+[submodule "www/puppet/modules/phantomjs"]
+	path = www/puppet/modules/phantomjs
+	url = https://github.com/opendevops/puppet-phantomjs.git
+[submodule "www/puppet/modules/php"]
+	path = www/puppet/modules/php
+	url = https://github.com/opendevops/puppet-php.git
+[submodule "www/puppet/modules/python"]
+	path = www/puppet/modules/python
+	url = https://github.com/opendevops/puppet-python.git
+[submodule "www/puppet/modules/robo"]
+	path = www/puppet/modules/robo
+	url = https://github.com/opendevops/puppet-robo.git
+[submodule "www/puppet/modules/ruby"]
+	path = www/puppet/modules/ruby
+	url = https://github.com/opendevops/puppet-ruby.git
+[submodule "www/puppet/modules/server"]
+	path = www/puppet/modules/server
+	url = https://github.com/opendevops/puppet-server.git
+[submodule "www/puppet/modules/ssh"]
+	path = www/puppet/modules/ssh
+	url = https://github.com/opendevops/puppet-ssh.git
+[submodule "www/puppet/modules/users"]
+	path = www/puppet/modules/users
+	url = https://github.com/opendevops/puppet-users.git
+[submodule "www/puppet/modules/xdebug"]
+	path = www/puppet/modules/xdebug
+	url = https://github.com/opendevops/puppet-xdebug.git
