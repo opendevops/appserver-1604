@@ -1,0 +1,50 @@
+#php_value error_log /var/www/projects/logs/php.errors
+
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Default document
+  RewriteRule ^(/)?$ /fe/index.php
+
+  # Application
+  #    RewriteRule ^a/pr/(.*)$ a/pr/ [L]
+  RewriteRule ^a$ app.php
+  RewriteRule ^a/(.*)$ app.php [QSA,L]
+
+
+  # API
+  RewriteRule ^api/(.*)$ app.php [QSA,L]
+
+  # Application resources
+  RewriteRule ^js/(.*)$ app.php [QSA,L]
+  RewriteRule ^css/(.*).css$ app.php [QSA,L]
+
+  # Application profiler
+  RewriteRule ^_wdt/(.*)$ app.php [QSA,L]
+  RewriteRule ^_profiler/(.*)$ app.php [QSA,L]
+
+
+
+  # Redirect any non-existing file, directory and symbolic link to frontend
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-l
+  RewriteRule ^(.*)$ /fe/$1 [QSA,L]
+</IfModule>
+
+#deny from 202.161.91.34
+#
+#Satisfy any
+## USER
+#AuthType Basic
+#AuthName "Password Protected Area"
+#AuthUserFile /www/setup/files/.htpasswd
+#Require valid-user
+## IP
+#order deny,allow
+#deny from all
+#allow from 127.0.0.1
+#allow from 110.232.112.215
+

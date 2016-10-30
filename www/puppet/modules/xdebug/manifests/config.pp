@@ -78,14 +78,11 @@ define xdebug::config (
     idekey                  => $idekey
   }
 
-  $template = 'xdebug/ini.erb'
-  $ensure   = 'present'
 
   file { '/etc/php/7.0/mods-available/xdebug.ini':
-    ensure  => 'present',
-    content => template($template),
+    ensure  => present,
+    content => template('xdebug/ini.erb'),
     require => Package['xdebug'],
     notify => Service['php7.0-fpm']
   }
-
 }

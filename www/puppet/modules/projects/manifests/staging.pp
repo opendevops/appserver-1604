@@ -1,6 +1,6 @@
-# == Class: xdebug
+# == Class: projects::build
 #
-# Full description of class xdebug here.
+# Full description of class projects here.
 #
 # === Parameters
 #
@@ -23,25 +23,25 @@
 #
 # === Examples
 #
-# include xdebug
-# xdebug::config { 'local_xdebug': default_enable => '1' }
+#  class { 'projects':
+#    servers  => [ 'pool.ntp.org', 'ntp.local.company.com' ],
+#  }
 #
 # === Authors
 #
-# Matthew Hansen
+# Opendevops
 #
 # === Copyright
 #
-# Copyright 2016 Matthew Hansen
+# Copyright 2016 Opendevops
 #
-class xdebug ($service = 'apache2') {
+define projects::staging(
+  $repo           = $title,
+  $projectFolder  = '/www/projects',
+  $wwwFolder      = '/var/www',
+  $user           = 'mrrobot',
+  $branch         = 'master',
+) {
 
-  package { 'xdebug':
-    name    => 'php-xdebug',
-    ensure  => installed,
-    require => Package['php7.0-fpm'],
-    # notify  => Service[$service]
-    notify  => Service['php7.0-fpm']
-  }
 
 }
