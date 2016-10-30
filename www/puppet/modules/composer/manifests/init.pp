@@ -50,6 +50,16 @@ define composer (
     default => $target_dir
   }
 
+
+  file { $target_dir:
+    ensure  => directory,
+    recurse => true,
+    owner   => 'vagrant',
+  }
+
+
+
+
   $composer_command_name = $command_name ? {
     'composer' => $::composer::params::command_name,
     default => $command_name
@@ -69,7 +79,7 @@ define composer (
     user    => $composer_user,
     creates => $composer_full_path,
     timeout => $download_timeout,
-    # require => Package['wget'],
+    require => File[$target_dir],
   }
 
   file { "${composer_target_dir}/${composer_command_name}":

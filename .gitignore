@@ -1,7 +1,12 @@
+## IDE
 .idea/
+
+## Folders
 .vagrant/
-*.log
 www/projects/
+
+## Logs & dumps
+*.log
 *.stackdump
 
 ## Backups

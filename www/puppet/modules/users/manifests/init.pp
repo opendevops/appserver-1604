@@ -35,18 +35,31 @@
 #
 define users(
   $user = $title,
+  $db_user = '',
   $db_password = '',
 ) {
 
 
+  # user { $user:
+  #   ensure  => 'present',
+  #   groups  => ['sudo'],
+  #   home    => "/home/$user",
+  #   shell   => '/bin/bash',
+  #   managehome => 'true',
+  # }
+
+
+  # TODO: Apache should run as "vagrant" user #138
+  # TODO: source https://github.com/puphpet/puphpet/issues/138#issuecomment-34508884
   user { $user:
-    ensure  => 'present',
-    groups  => ['sudo'],
-    home    => "/home/$user",
+    ensure  => present,
     shell   => '/bin/bash',
+    home    => "/home/$user",
+    groups  => ['www-data', 'root', 'sudo'],
     managehome => 'true',
+    # require => Group[$group],
   }
 
   # setup home files
-  users::home { $user: db_password => $dbPassword }
+  users::home { $user: db_user => $db_user, db_password => $db_password }
 }

@@ -39,7 +39,9 @@ define phantomjs (
   $source_dir = '/opt',
   $install_dir = '/usr/local/bin',
   $force_update = false,
-  $timeout = 300
+  $timeout = 300,
+  $user = 'vagrant',
+
 ) {
 
   $packages = [
@@ -64,6 +66,7 @@ define phantomjs (
 
   file { "${install_dir}/phantomjs":
     ensure => link,
+    owner => $user,
     target => "${source_dir}/phantomjs/bin/phantomjs",
     force  => true,
   }

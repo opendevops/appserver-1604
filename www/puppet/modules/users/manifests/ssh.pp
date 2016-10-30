@@ -43,6 +43,17 @@ define users::ssh (
   $public_key_name = "id_rsa.pub",
 ) {
 
+
+  # Ensure project_path exists
+  file { "/home/$user/.ssh":
+    owner   => $user,
+    group   => $user,
+    mode    => '0700',
+    ensure  => directory,
+    recurse => true,
+  }
+
+
   # copy private key
   file { "$user/$private_key_name":
     ensure  => file,
@@ -50,7 +61,8 @@ define users::ssh (
     group   => $user,
     mode    => '0600',
     path    => "/home/$user/.ssh/$private_key_name",
-    source  => $id_rsa_source,
+    source  => "puppet:///modules/ssh/$user/$private_key_name",
+    require => File["/home/$user/.ssh"],
   }
 
   # copy public key
@@ -61,7 +73,10 @@ define users::ssh (
     mode    => '0600',
     path    => "/home/$user/.ssh/$public_key_name",
     source  => "puppet:///modules/ssh/$user/$public_key_name",
+    require => File["/home/$user/.ssh"],
   }
+
+
 
   # add public key to authorized_keys
   exec { "$user/authorized_keys":
@@ -82,5 +97,14 @@ define users::ssh (
     require  => Exec["$user/authorized_keys-unique-file"],
     notify   => Service["sshd"]
   }
+
+  file { "/home/$user/.ssh/authorized_keys":
+    ensure  => file,
+    owner   => $user,
+    group   => $user,
+    mode    => '0600',
+    require => Exec["$user/authorized_keys-use-unique"],
+  }
+
 
 }

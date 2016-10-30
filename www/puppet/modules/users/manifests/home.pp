@@ -37,6 +37,7 @@
 #
 define users::home (
   $user = $title,
+  $db_user = '',
   $db_password = '',
 ) {
 

@@ -2,6 +2,6 @@
 
 
 
-See `docs/setup-local.md`
+See `docs/local-setup.md`
 
 

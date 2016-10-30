@@ -38,7 +38,11 @@ define apache::vhost (
   $project_name = $title,
   $server_name = 'appserver1604.dev',
   $document_root = '/var/www/appserver1604',
-  $project_path = '/vagrant/www/projects'
+  $project_path = '/vagrant/www/projects',
+  # link or directory
+  $ensure = 'link',
+  $owner = 'vagrant',
+  $group = 'www-data',
 ) {
 
 
@@ -46,38 +50,61 @@ define apache::vhost (
   if ! defined (File[$project_path]) {
     file { "$project_path":
       # path => $project_path,
-      ensure => 'directory',
-      recurse => true,
+      ensure  => 'directory',
+      # recurse => true,
+      owner   => $owner,
+      group   => $group
+    }
+  }
+
+  # Ensure project_path/project_name exists
+  if ! defined (File["$project_path/$project_name"]) {
+    file { "$project_path/$project_name":
+      # path => $project_path,
+      ensure  => 'directory',
+      # recurse => true,
+      owner   => $owner,
+      group   => $group
     }
   }
 
 
   # create vhost in sites-available
   file { "/etc/apache2/sites-available/$project_name.conf":
-    ensure  => file,
-    path    => "/etc/apache2/sites-available/$project_name.conf",
-    content => template('apache/vhost.conf.erb'),
-    require => Package["apache2"],
+    ensure    => file,
+    path      => "/etc/apache2/sites-available/$project_name.conf",
+    content   => template('apache/vhost.conf.erb'),
+    require   => Package["apache2"],
     subscribe => Package["apache2"],
   }
 
   # symlink apache site to the site-enabled directory
   file { "/etc/apache2/sites-enabled/$project_name.conf":
-    ensure => link,
-    target => "/etc/apache2/sites-available/$project_name.conf",
+    ensure  => link,
+    target  => "/etc/apache2/sites-available/$project_name.conf",
     require => File["/etc/apache2/sites-available/$project_name.conf"],
     # notify => Service["apache2"],
   }
 
   # symlink apache site to the site-enabled directory
-  # if ! defined (File[$document_root]) {
+  if $ensure == 'link' {
     file { "$document_root":
-      ensure  => link,
+      ensure  => $ensure,
       # path => "/var/www/$project_name",
-      path => $document_root,
+      path    => $document_root,
       target  => "$project_path/$project_name",
       require => File["/etc/apache2/sites-available/$project_name.conf"],
       # notify => Service["apache2"],
     }
-  # }
+  } else {
+
+    if ! defined (File[$document_root]) {
+      file { "$document_root":
+        ensure  => 'directory',
+        recurse => true,
+      }
+    }
+
+  }
+
 }

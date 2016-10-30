@@ -37,6 +37,7 @@ Vagrant.configure("2") do |config|
     apt-get install -y puppet
   SHELL
 
+  #config.vm.provision "shell", path: "www/scripts/local-before-puppet.sh"
 
   # Enable the Puppet provisioner, with will look in manifests
   config.vm.provision :puppet do |puppet|
@@ -44,6 +45,9 @@ Vagrant.configure("2") do |config|
     puppet.manifest_file = 'local.pp'
     puppet.module_path = 'www/puppet/modules'
   end
+
+
+  #config.vm.provision "shell", path: "www/scripts/local-post-puppet.sh"
 
 
   # NETWORK IP ADDRESS
@@ -57,6 +61,9 @@ Vagrant.configure("2") do |config|
     v.memory = 2048
     v.cpus = 2
   end
+  # see http://stackoverflow.com/a/23887366
+  config.nfs.map_uid = Process.uid
+  config.nfs.map_gid = Process.gid
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is

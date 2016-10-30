@@ -13,9 +13,18 @@
   </Directory>
 
   # proxy fcgi module config for php-fpm
-  <LocationMatch "^(.*\.php)$">
-    ProxyPass fcgi://127.0.0.1:9000<%= @document_root %>
-  </LocationMatch>
+  #<LocationMatch "^(.*\.php)$">
+  #  ProxyPass fcgi://127.0.0.1:9000<%= @document_root %>
+  #</LocationMatch>
+
+#  <IfModule proxy_module>
+#    ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000<%= @document_root %>/$1
+#  </IfModule>
+
+  <FilesMatch \.php$>
+    SetHandler "proxy:fcgi://127.0.0.1:9000"
+  </FilesMatch>
+
 
 
   ## Logging

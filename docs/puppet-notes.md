@@ -9,3 +9,8 @@
 
 Package Providers (eg. gem, pip,)
 - https://docs.puppet.com/puppet/latest/reference/type.html#package-attribute-provider
+
+**generating puppet module**
+
+- use this command `puppet module generate`
+

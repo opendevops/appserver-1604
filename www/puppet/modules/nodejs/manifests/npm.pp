@@ -38,6 +38,7 @@ define nodejs::npm ($project = $title) {
   exec { 'install_less':
     command => 'npm install -g less',
     creates => '/usr/local/lib/node_modules/less',
+
     require => Package['npm']
   }
 

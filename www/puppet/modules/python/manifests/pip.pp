@@ -32,7 +32,7 @@
 #
 # Copyright 2016 Matthew Hansen
 #
-define python::pip ($project = $title) {
+define python::pip ($project = $title, $user = 'vagrant') {
 
   # install php-fpm package
   package { 'python-dev':
@@ -65,4 +65,12 @@ define python::pip ($project = $title) {
     # require => Package['psutil'],
     require => Exec['psutil'],
   }
+
+
+  file { '/usr/local/bin/php*':
+    ensure  => 'present',
+    recurse => true,
+    owner   => $user,
+  }
+
 }

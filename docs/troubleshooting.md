@@ -1,6 +1,17 @@
 # Troubleshooting
 
 
+
+### Composer
+
+```
+composer diagnose
+composer install -vvv
+
+```
+
+
+
 ### "vboxsf" is not available
 
 Vagrant was unable to mount VirtualBox shared folders. This is usually
