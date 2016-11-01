@@ -89,8 +89,6 @@ projects::local { 'appserver1604.dev':
 }
 
 
-
-
 # CACHE
 include cache
 cache::memcached { 'memcached': }
