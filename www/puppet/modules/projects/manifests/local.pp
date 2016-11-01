@@ -36,31 +36,35 @@
 # Copyright 2016 Opendevops
 #
 define projects::local(
-  $repo           = $title,
-  $projectFolder  = '/vagrant/www/projects',
-  $wwwFolder      = '/var/www',
-  $user           = 'vagrant',
-  $group          = 'www-data',
-  $branch         = 'master',
+  # eg. appserver.dev
+  $project_name      = $title,
+  $domain            = 'www.appserver1604.dev',
+  $projects_root     = '/vagrant/www/projects',
+  $project_path      = '/vagrant/www/projects/appserver',
+  $project_webroot   = '/vagrant/www/projects/appserver/web',
+  $symlinked_webroot = '/var/www/appserver',
+  $user              = 'vagrant',
+  $group             = 'www-data',
+  $repo              = 'appserver',
+  $branch            = 'master',
 ) {
 
 
-  apache::vhost { $repo:
-    server_name    => "www.$repo.dev",
-    document_root  => "$wwwFolder/$repo",
-    project_path   => $projectsFolder,
-    ensure         => 'directory',
+  # apache vhost
+  apache::vhost { $project_name:
+    server_name     => $domain,
+    document_root   => $project_webroot,
+    project_path    => $project_path,
+    projects_root   => $projects_root,
+    ensure          => 'directory',
   }
 
-  # file permissions
-  file { "$wwwFolder/$repo":
-    ensure  => directory,
-    owner   => $user,
-    group   => $group,
-    # recursive => true,
-    # force => true,
-    mode    => 0775,
-  }
-
+  # # apache vhost
+  # apache::vhost { "${sub_domain}${domain}":
+  #   server_name    => "{$sub_domain}{$domain}",
+  #   document_root  => "$projectFolder/$project",
+  #   project_path   => $projectsFolder,
+  #   ensure         => 'directory',
+  # }
 
 }

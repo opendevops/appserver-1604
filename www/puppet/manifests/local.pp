@@ -1,13 +1,11 @@
 # PREFERENCES
 
-$prodMode = false
-$defaultUser = 'mrrobot'
-# $repos            = ['appserver']
-# $branch           = 'master'
-$dashboardDomain = 'dashboard'
-$interface = 'enp0s3'
-$projectsFolder = '/vagrant/www/projects'
-$wwwFolder = '/var/www'
+$prodMode         = false
+$default_user      = 'vagrant'
+$default_group    = 'www-data'
+$projects_root    = '/vagrant/www/projects'
+$interface        = 'enp0s3'
+$wwwFolder        = '/var/www'
 $dbNames          = ['appserver', 'test']
 $dbUser           = 'dbuser'
 $dbPassword       = 'strongpassword'
@@ -33,19 +31,20 @@ include ssh
 ssh::config{ 'ssh_config': }
 
 # USERS
-users { "${defaultUser}": db_user => $dbUser, db_password => $dbPassword }
+users { "${default_user}": db_user => $dbUser, db_password => $dbPassword }
 # Ensure id_rsa & id_rsa.pub are in this folder: www/puppet/modules/ssh/files/$user/id_rsa",
-# users::ssh{ $defaultUser: }
+# users::ssh{ $default_user: }
 
 # APACHE
 include apache
 apache::config { "apache_config": }
-apache::vhost { $dashboardDomain:
-  server_name    => "$dashboardDomain.dev",
-  document_root  => "$wwwFolder/$dashboardDomain",
-  project_path   => $projectsFolder,
-  owner          => $defaultUser,
-  group          => $defaultGroup,
+apache::vhost { 'dashboard':
+  domain            => 'dashboard.dev',
+  projects_root     => "/vagrant/www/projects",
+  project_path      => "/vagrant/www/projects/dashboard",
+  project_webroot   => "/vagrant/www/projects/dashboard",
+  owner             => $default_user,
+  group             => $default_group,
 }
 
 
@@ -71,18 +70,25 @@ include ruby
 
 # PYTHON - install and configure python
 include python
-python::pip{ 'python_pip': user => $defaultUser }
+python::pip{ 'python_pip': user => $default_user }
 
 # DASHBOARD
 dashboard::config { 'dashboard_config':
-  path      => "$projectsFolder/$dashboardDomain",
+  path      => "$projects_root/dashboard",
   interface => $interface,
-  user      => $defaultUser,
+  user      => $default_user,
 }
 
 # PROJECTS
-class { 'projects': env => 'local', repos => $repos, projectFolder => $projectsFolder, user => $defaultUser, branch => $branch }
-# projects::local {'projects': repos => $repos, projectFolder => $projectsFolder, user => $defaultUser, group => $defaultGroup }
+projects::local { 'appserver1604.dev':
+  domain            => 'www.appserver1604.dev',
+  projects_root     => $projects_root,
+  project_path      => "$projects_root/appserver",
+  project_webroot   => "$projects_root/appserver/web",
+  user              => $default_user
+}
+
+
 
 
 # CACHE
@@ -91,13 +97,13 @@ cache::memcached { 'memcached': }
 cache::opcache { 'opcache': prod_mode => $prodMode }
 
 # COMPOSER
-::composer{ 'composer': target_dir => '/usr/local/bin', user => $defaultUser }
+::composer { 'composer': target_dir => '/usr/local/bin', user => $default_user }
 
 # ROBO
-::robo{ 'robo': target_dir => '/usr/local/bin', force_update => false, user => $defaultUser }
+::robo { 'robo': target_dir => '/usr/local/bin', force_update => false, user => $default_user }
 
 # PHANTOMJS
-::phantomjs{ 'phantomjs': package_version => '2.1.1', force_update => false, user => $defaultUser }
+::phantomjs { 'phantomjs': package_version => '2.1.1', force_update => false, user => $default_user }
 
 
-#TODO: install java
+#TODO: install java?

@@ -35,10 +35,12 @@
 # Copyright 2016 Matthew Hansen
 #
 define apache::vhost (
+  # eg. appserver1604.dev
   $project_name = $title,
-  $server_name = 'appserver1604.dev',
-  $document_root = '/var/www/appserver1604',
-  $project_path = '/vagrant/www/projects',
+  $projects_root     = '/vagrant/www/projects',
+  $project_path      = '/vagrant/www/projects/appserver',
+  $project_webroot   = '/vagrant/www/projects/appserver/web',
+  $symlinked_webroot = '/var/www/appserver',
   # link or directory
   $ensure = 'link',
   $owner = 'vagrant',
@@ -47,8 +49,8 @@ define apache::vhost (
 
 
   # Ensure project_path exists
-  if ! defined (File[$project_path]) {
-    file { "$project_path":
+  if ! defined (File[$projects_root]) {
+    file { "$projects_root":
       # path => $project_path,
       ensure  => 'directory',
       # recurse => true,
@@ -58,8 +60,8 @@ define apache::vhost (
   }
 
   # Ensure project_path/project_name exists
-  if ! defined (File["$project_path/$project_name"]) {
-    file { "$project_path/$project_name":
+  if ! defined (File["$project_path"]) {
+    file { "$project_path":
       # path => $project_path,
       ensure  => 'directory',
       # recurse => true,
@@ -88,18 +90,18 @@ define apache::vhost (
 
   # symlink apache site to the site-enabled directory
   if $ensure == 'link' {
-    file { "$document_root":
+    file { "$project_webroot":
       ensure  => $ensure,
       # path => "/var/www/$project_name",
-      path    => $document_root,
-      target  => "$project_path/$project_name",
+      path    => $symlinked_webroot,
+      target  => $project_webroot,
       require => File["/etc/apache2/sites-available/$project_name.conf"],
       # notify => Service["apache2"],
     }
   } else {
 
-    if ! defined (File[$document_root]) {
-      file { "$document_root":
+    if ! defined (File[$project_webroot]) {
+      file { "$project_webroot":
         ensure  => 'directory',
         recurse => true,
       }
