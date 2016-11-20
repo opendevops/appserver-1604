@@ -27,7 +27,17 @@ define server::config (
   $compress = 'compress',
   # default: ''
   $delayCompress = 'deplaycompress',
+  # eg. Australia/Melbourne
+  $timezone = '',
 ) {
+
+
+  if $timezone != '' {
+    exec { "timedatectl set-timezone $timezone":
+      command => "timedatectl set-timezone $timezone",
+      user    => 'root',
+    }
+  }
 
 
   # Change the default policy for "forward" to drop

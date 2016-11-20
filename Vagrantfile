@@ -73,4 +73,7 @@ Vagrant.configure("2") do |config|
   # config.vm.synced_folder "www", "/var/www", type: "nfs"
   config.vm.synced_folder ".", "/vagrant", :nfs => true, :mount_options => ['actimeo=2']
 
+  # avoid "stdin: is not a tty" message. See http://goo.gl/Zjs8VT
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
 end

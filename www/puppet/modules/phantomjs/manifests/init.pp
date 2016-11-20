@@ -51,7 +51,11 @@ define phantomjs (
   ]
 
   $pkg_src_url = $source_url ? {
-    undef   => "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-${package_version}-linux-${::hardwaremodel}.tar.bz2",
+    # see https://github.com/Medium/phantomjs#deciding-where-to-get-phantomjs
+    undef   => "https://cnpmjs.org/mirrors/phantomjs/phantomjs-${package_version}-linux-${::hardwaremodel}.tar.bz2",
+    # undef   => "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-${package_version}-linux-${::hardwaremodel}.tar.bz2",
+    # undef   => "https://repo1.maven.org/maven2/com/github/klieber/phantomjs/1.9.8/phantomjs-1.9.8-linux-x86_64.tar.bz2",
+
     default => $source_url,
   }
 
@@ -66,7 +70,7 @@ define phantomjs (
 
   file { "${install_dir}/phantomjs":
     ensure => link,
-    owner => $user,
+    owner  => $user,
     target => "${source_dir}/phantomjs/bin/phantomjs",
     force  => true,
   }

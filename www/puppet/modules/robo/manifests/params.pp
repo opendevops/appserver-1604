@@ -34,9 +34,9 @@
 # Copyright 2016 Matthew Hansen
 #
 class robo::params {
-  $robo_repo = 'https://github.com/consolidation/Robo/releases/download/'
-  $version = '1.0.0-RC3'
-  $filename = '/robo.phar'
+  $robo_repo = 'https://github.com/consolidation/Robo/releases/download'
+  $version = '1.0.3'
+  $filename = 'robo.phar'
   $phar_location = "$robo_repo/$version/$filename"
   $target_dir    = '/usr/local/bin'
   $command_name  = 'robo'

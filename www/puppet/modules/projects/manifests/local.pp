@@ -38,33 +38,62 @@
 define projects::local(
   # eg. appserver.dev
   $project_name      = $title,
-  $domain            = 'www.appserver1604.dev',
+  # $domain            = 'www.appserver1604.dev',
   $projects_root     = '/vagrant/www/projects',
-  $project_path      = '/vagrant/www/projects/appserver',
-  $project_webroot   = '/vagrant/www/projects/appserver/web',
-  $symlinked_webroot = '/var/www/appserver',
+  # $project_path      = '/vagrant/www/projects/appserver',
+  # $project_webroot   = '/vagrant/www/projects/appserver/web',
+  # $symlinked_webroot = '/var/www/appserver',
   $user              = 'vagrant',
   $group             = 'www-data',
   $repo              = 'appserver',
   $branch            = 'master',
 ) {
 
-
-  # apache vhost
-  apache::vhost { $project_name:
-    server_name     => $domain,
-    document_root   => $project_webroot,
-    project_path    => $project_path,
-    projects_root   => $projects_root,
-    ensure          => 'directory',
+  apache::vhost { 'appserver1604.dev':
+    domain            => 'appserver1604.dev',
+    project_webroot   => "$projects_root/appserver/web",
+    project_path      => "$projects_root/appserver",
+    projects_root     => $projects_root,
+    ensure            => 'directory',
   }
 
-  # # apache vhost
-  # apache::vhost { "${sub_domain}${domain}":
-  #   server_name    => "{$sub_domain}{$domain}",
-  #   document_root  => "$projectFolder/$project",
-  #   project_path   => $projectsFolder,
-  #   ensure         => 'directory',
-  # }
+  apache::vhost { 'www.invoice.dev':
+    domain            => 'www.invoice.dev',
+    project_webroot   => "$projects_root/invoice",
+    project_path      => "$projects_root/invoice",
+    projects_root     => $projects_root,
+    ensure            => 'directory',
+  }
+
+  apache::vhost { 'www.dashboard.dev':
+    domain            => 'www.dashboard.dev',
+    project_webroot   => "$projects_root/dashboard/ui-angular2/dist/prod",
+    project_path      => "$projects_root/dashboard/ui-angular2",
+    projects_root     => $projects_root,
+    ensure            => 'directory',
+  }
+
+  apache::vhost { 'api.hiphiparray.dev':
+    domain            => 'api.hiphiparray.dev',
+    project_webroot   => "$projects_root/hiphiparray/api-symfony3/web",
+    project_path      => "$projects_root/hiphiparray/api-symfony3",
+    projects_root     => $projects_root,
+    ensure            => 'directory',
+  }
+
+  apache::vhost { 'react.hiphiparray.dev':
+    domain            => 'react.hiphiparray.dev',
+    project_webroot   => "$projects_root/hiphiparray/ui-react/public",
+    project_path      => "$projects_root/hiphiparray/ui-react/public",
+    projects_root     => $projects_root,
+    ensure            => 'directory',
+  }
+  apache::vhost { 'angular2.hiphiparray.dev':
+    domain            => 'angular2.hiphiparray.dev',
+    project_webroot   => "$projects_root/hiphiparray/ui-angular2",
+    project_path      => "$projects_root/hiphiparray/ui-angular2",
+    projects_root     => $projects_root,
+    ensure            => 'directory',
+  }
 
 }

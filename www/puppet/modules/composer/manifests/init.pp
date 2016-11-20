@@ -54,7 +54,7 @@ define composer (
   file { $target_dir:
     ensure  => directory,
     recurse => true,
-    owner   => 'vagrant',
+    owner   => $user,
   }
 
 

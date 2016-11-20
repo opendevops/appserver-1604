@@ -34,7 +34,7 @@
 #
 # Copyright 2016 Matthew Hansen
 #
-define mysql::database ($database = $title, $user) {
+define mysql::database ($database_name = $title, $user) {
 
   # source: https://github.com/alkivi-sas/puppet-mysql/tree/github/manifests
 
@@ -45,11 +45,11 @@ define mysql::database ($database = $title, $user) {
   #
   # mysql::user { $user: }
 
-  exec { "create-database-${title}":
-    command  => "mysql -e 'CREATE DATABASE ${title} character SET utf8; GRANT ALL on ${title}.* to ${user}@localhost; FLUSH PRIVILEGES;' -uroot -p`cat /root/.passwd/db/mysql`",
+  exec { "create-database-${database_name}":
+    command  => "mysql -e 'CREATE DATABASE ${database_name} character SET utf8; GRANT ALL on *.* to ${user}@localhost; FLUSH PRIVILEGES;' -uroot -p`cat /root/.passwd/db/mysql`",
     provider => 'shell',
     path     => ['/bin', '/sbin', '/usr/bin' ],
     require  => Exec["create-mysql_user-$user"],
-    unless   => "mysql -e 'SHOW DATABASES LIKE \"${title}\"' -uroot -p`cat /root/.passwd/db/mysql` | grep -q ${title}",
+    unless   => "mysql -e 'SHOW DATABASES LIKE \"${database_name}\"' -uroot -p`cat /root/.passwd/db/mysql` | grep -q ${database_name}",
   }
 }

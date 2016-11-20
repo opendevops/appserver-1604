@@ -47,20 +47,21 @@ define python::pip ($project = $title, $user = 'vagrant') {
   }
 
   exec { "pip-upgrade":
-    path    => "/bin:/usr/bin",
+    path    => "/bin:/usr/bin:/usr/local/bin",
     command => "pip install --upgrade pip",
+    # unless => 'pip --version',
     require => Package['python-pip'],
   }
 
   exec { "psutil":
-    path    => "/bin:/usr/bin",
+    path    => "/bin:/usr/bin:/usr/local/bin",
     command => "pip install psutil",
     # require  => Package['python-pip'],
     require => Exec['pip-upgrade'],
   }
 
   exec { "pip install psutil --upgrade":
-    path    => "/bin:/usr/bin",
+    path    => "/bin:/usr/bin::/usr/local/bin",
     command => "pip install psutil --upgrade",
     # require => Package['psutil'],
     require => Exec['psutil'],

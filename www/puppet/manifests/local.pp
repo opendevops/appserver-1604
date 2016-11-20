@@ -7,15 +7,16 @@ $projects_root    = '/vagrant/www/projects'
 $interface        = 'enp0s3'
 $wwwFolder        = '/var/www'
 $dbNames          = ['appserver', 'test']
-$dbUser           = 'dbuser'
-$dbPassword       = 'strongpassword'
-$dbRootPassword   = 'verystrongpassword'
+$db_user           = 'dbuser'
+$db_password       = 'strongpassword'
+$db_root_password   = 'verystrongpassword'
 
 
 
 # CHANGING BELOW NOT REQUIRED
 
-# default path
+# NOTE: composer, phantomjs, robo etc are installed here: /usr/local/bin
+# default paths
 Exec {
   path => ["/usr/bin", "/bin", "/usr/sbin", "/sbin", "/usr/local/bin", "/usr/local/sbin"]
 }
@@ -31,21 +32,13 @@ include ssh
 ssh::config{ 'ssh_config': }
 
 # USERS
-users { "${default_user}": db_user => $dbUser, db_password => $dbPassword }
+users { $default_user: db_user => $db_user, db_password => $db_password }
 # Ensure id_rsa & id_rsa.pub are in this folder: www/puppet/modules/ssh/files/$user/id_rsa",
 # users::ssh{ $default_user: }
 
 # APACHE
 include apache
 apache::config { "apache_config": }
-apache::vhost { 'dashboard':
-  domain            => 'dashboard.dev',
-  projects_root     => "/vagrant/www/projects",
-  project_path      => "/vagrant/www/projects/dashboard",
-  project_webroot   => "/vagrant/www/projects/dashboard",
-  owner             => $default_user,
-  group             => $default_group,
-}
 
 
 # PHP - install and configure php
@@ -54,13 +47,13 @@ php::config { 'php_config': max_execution_time => 300, upload_max_filesize => '2
 
 # X-DEBUG - install and configure xdebug
 include xdebug
-xdebug::config { 'local_xdebug': default_enable => 1, profiler_enable => 1, remote_port => 9009 }
+xdebug::config { 'local_xdebug': default_enable => 1, profiler_enable => 1, remote_port => 9000 }
 
 # MYSQL - install and start mysql + set root password
 include mysql
-mysql::config { 'mysql_config': password => $dbRootPassword }
-mysql::user { $dbUser: password => $dbPassword }
-mysql::database { $dbNames: user => $dbUser }
+mysql::config { 'mysql_config': password => $db_root_password }
+mysql::user { $db_user: user_password => $db_password, root_password => $db_root_password }
+mysql::database { $dbNames: user => $db_user }
 
 # NODE - install and configure nodejs
 include nodejs
@@ -74,19 +67,17 @@ python::pip{ 'python_pip': user => $default_user }
 
 # DASHBOARD
 dashboard::config { 'dashboard_config':
-  path      => "$projects_root/dashboard",
+  path      => "$projects_root/appserver/web",
   interface => $interface,
   user      => $default_user,
 }
 
 # PROJECTS
-projects::local { 'appserver1604.dev':
-  domain            => 'www.appserver1604.dev',
+projects::local { 'local_projects':
   projects_root     => $projects_root,
-  project_path      => "$projects_root/appserver",
-  project_webroot   => "$projects_root/appserver/web",
   user              => $default_user
 }
+
 
 
 

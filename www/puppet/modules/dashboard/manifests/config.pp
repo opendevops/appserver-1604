@@ -35,7 +35,7 @@
 # Copyright 2016 Matthew Hansen
 #
 define dashboard::config (
-  $path = '/vagrant/www/projects/appserver1604',
+  $path = '/vagrant/www/projects/appserver/web',
   $php_info  = true,
   $monitor   = true,
   $interface = 'eth1',

@@ -57,6 +57,11 @@ define mysql::config (
   $innodb_log_file_size = 'innodb_log_file_size = 64M',
 ) {
 
+  # default
+  # $sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+  # remove ONLY_FULL_GROUP_BY
+  $sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+
   # secure mysql
   # exec { 'mysql_secure_installation' :
   #   command => 'mysql_secure_installation',
@@ -67,10 +72,20 @@ define mysql::config (
 
   # set the root password
   exec { 'root-password' :
-    command => '/usr/bin/mysqladmin -u root password "$password"',
+    command => "/usr/bin/mysqladmin -u root password $password",
     # require => Exec['mysql_secure_installation'],
     require => Package["mysql-server"],
     notify  => Service['mysql']
+  }
+
+  # mysql config file
+  file { 'my.cnf':
+    # ensure     => file,
+    mode       => '0644',
+    path       => '/etc/mysql/my.cnf',
+    content    => template('mysql/my.cnf.erb'),
+    require    => Package["mysql-server"],
+    subscribe  => Package["mysql-server"],
   }
 
 

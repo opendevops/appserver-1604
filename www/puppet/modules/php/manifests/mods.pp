@@ -60,7 +60,7 @@ define php::mods ($project = $title) {
     # xml
     'php-xml',
     # required for PECL (to install mailparse)
-    # 'php-pear',
+    'php-pear',
     'php-dev',
   ]
 

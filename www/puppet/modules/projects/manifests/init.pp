@@ -45,7 +45,7 @@ class projects($env, $repos, $projectFolder, $user, $branch) {
 
 
   if $env == 'staging' {
-    projects::local {$repos: projectFolder => $projectFolder, user => $user, branch => $branch }
+    projects::staging {$repos: projectFolder => $projectFolder, user => $user, branch => $branch }
   }
 
   if $env == 'prod' {

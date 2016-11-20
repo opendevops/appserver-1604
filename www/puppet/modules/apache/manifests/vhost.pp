@@ -37,15 +37,22 @@
 define apache::vhost (
   # eg. appserver1604.dev
   $project_name = $title,
+  $domain            = 'appserver.dev',
   $projects_root     = '/vagrant/www/projects',
   $project_path      = '/vagrant/www/projects/appserver',
   $project_webroot   = '/vagrant/www/projects/appserver/web',
   $symlinked_webroot = '/var/www/appserver',
   # link or directory
-  $ensure = 'link',
+  # $ensure = 'link',
+  $ensure = 'directory',
   $owner = 'vagrant',
   $group = 'www-data',
 ) {
+
+  # eg. www.appserver.dev
+  $server_name = $domain
+  # eg. /var/www/healthkit
+  $document_root = $project_webroot
 
 
   # Ensure project_path exists
@@ -89,6 +96,9 @@ define apache::vhost (
   }
 
   # symlink apache site to the site-enabled directory
+  # if $symlinked_webroot and $project_webroot are different, for example
+  # $symlinked_webroot = '/var/www/dashboard' and $project_webroot = '/var/www/projects/dashboard'
+  # the domain will point to the '/var/www/dashboard' and point to '/var/www/projects/dashboard'
   if $ensure == 'link' {
     file { "$project_webroot":
       ensure  => $ensure,

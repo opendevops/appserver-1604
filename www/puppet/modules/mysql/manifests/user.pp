@@ -34,45 +34,19 @@
 #
 # Copyright 2016 Matthew Hansen
 #
-define mysql::user ($username = $title, $password) {
+define mysql::user (
+  $username      = $title,
+  $user_password = '',
+  $root_password = '',
+  $domain        = 'localhost'
+) {
 
-  # source: https://github.com/alkivi-sas/puppet-mysql/tree/github/manifests
-
-  # validate_string($domain)
-
-  $domain = 'localhost'
-
-  if($password)
-  {
-
-    # alkivi_base::passwd { "${title}-db":
-    #   file => $title,
-    #   type => 'db',
-    # }
-    #
-    # $mysql_password = alkivi_password('mysql', 'db')
-    # $user_password = alkivi_password($title, 'db')
-
-
-    $mysql_password = $username
-    $user_password = $password
-
-    exec { "create-mysql_user-${title}":
-      command  => "mysql -e \"CREATE USER ${title}@${domain} IDENTIFIED BY '${user_password}'\" -uroot -p${mysql_password}",
-      provider => 'shell',
-      path     => ['/bin', '/sbin', '/usr/bin' ],
-      require  => Service["mysql"],
-      unless   => "mysql -u${title} -p${user_password} -e ''",
-    }
+  exec { "create-mysql_user-${username}":
+    command  => "mysql -e 'CREATE USER ${username}@${domain} IDENTIFIED BY ${user_password}' -uroot -p`cat /root/.passwd/db/mysql`",
+    provider => 'shell',
+    path     => ['/bin', '/sbin', '/usr/bin' ],
+    require  => Service["mysql"],
+    unless   => "mysql -u${username} -p${user_password} -e ''",
   }
-  else
-  {
-    exec { "create-mysql_user-${title}":
-      command  => "mysql -e \"CREATE USER ${title}@${domain}\" -uroot -p${mysql_password}",
-      provider => 'shell',
-      path     => ['/bin', '/sbin', '/usr/bin' ],
-      require  => Service["mysql"],
-      unless   => "mysql -u${title} -e ''",
-    }
-  }
+
 }
