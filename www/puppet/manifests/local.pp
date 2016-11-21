@@ -93,6 +93,9 @@ cache::opcache { 'opcache': prod_mode => $prodMode }
 # ROBO
 ::robo { 'robo': target_dir => '/usr/local/bin', force_update => false, user => $default_user }
 
+# PHPMETRICS
+::phpmetrics{ 'phpmetrics': target_dir => '/usr/local/bin', force_update => false, user => $default_user }
+
 # PHANTOMJS
 ::phantomjs { 'phantomjs': package_version => '2.1.1', force_update => false, user => $default_user }
 
