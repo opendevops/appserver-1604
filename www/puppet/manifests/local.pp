@@ -1,15 +1,15 @@
 # PREFERENCES
 
-$prodMode         = false
-$default_user      = 'vagrant'
-$default_group    = 'www-data'
-$projects_root    = '/vagrant/www/projects'
-$interface        = 'enp0s3'
-$wwwFolder        = '/var/www'
-$dbNames          = ['appserver', 'test']
-$db_user           = 'dbuser'
-$db_password       = 'strongpassword'
-$db_root_password   = 'verystrongpassword'
+$prod_mode = false
+$default_user = 'vagrant'
+$default_group = 'www-data'
+$projects_root = '/vagrant/www/projects'
+$interface = 'enp0s3'
+$wwwFolder = '/var/www'
+$db_names = ['appserver', 'test']
+$db_user = 'dbuser'
+$db_password = 'strongpassword'
+$db_root_password = 'verystrongpassword'
 
 
 
@@ -29,7 +29,7 @@ server::config { 'server_config': }
 
 # SSH
 include ssh
-ssh::config{ 'ssh_config': }
+ssh::config { 'ssh_config': }
 
 # USERS
 users { $default_user: db_user => $db_user, db_password => $db_password }
@@ -43,7 +43,12 @@ apache::config { "apache_config": }
 
 # PHP - install and configure php
 include php
-php::config { 'php_config': max_execution_time => 300, upload_max_filesize => '20M', display_errors => 'On', display_startup_errors => 'On' }
+php::config { 'php_config':
+  max_execution_time     => 300,
+  upload_max_filesize    => '20M',
+  display_errors         => 'On',
+  display_startup_errors => 'On'
+}
 
 # X-DEBUG - install and configure xdebug
 include xdebug
@@ -53,7 +58,7 @@ xdebug::config { 'local_xdebug': default_enable => 1, profiler_enable => 1, remo
 include mysql
 mysql::config { 'mysql_config': password => $db_root_password }
 mysql::user { $db_user: user_password => $db_password, root_password => $db_root_password }
-mysql::database { $dbNames: user => $db_user }
+mysql::database { $db_names: user => $db_user }
 
 # NODE - install and configure nodejs
 include nodejs
@@ -63,7 +68,7 @@ include ruby
 
 # PYTHON - install and configure python
 include python
-python::pip{ 'python_pip': user => $default_user }
+python::pip { 'python_pip': user => $default_user }
 
 # DASHBOARD
 dashboard::config { 'dashboard_config':
@@ -74,30 +79,27 @@ dashboard::config { 'dashboard_config':
 
 # PROJECTS
 projects::local { 'local_projects':
-  projects_root     => $projects_root,
-  user              => $default_user
+  projects_root => $projects_root,
+  user          => $default_user
 }
-
-
-
 
 
 # CACHE
 include cache
 cache::memcached { 'memcached': }
-cache::opcache { 'opcache': prod_mode => $prodMode }
+cache::opcache { 'opcache': prod_mode => $prod_mode }
 
 # COMPOSER
 ::composer { 'composer': target_dir => '/usr/local/bin', user => $default_user }
 
 # ROBO
-::robo { 'robo': target_dir => '/usr/local/bin', force_update => false, user => $default_user }
+# ::robo { 'robo': target_dir => '/usr/local/bin', force_update => false, user => $default_user }
 
 # PHPMETRICS
-::phpmetrics{ 'phpmetrics': target_dir => '/usr/local/bin', force_update => false, user => $default_user }
+# ::phpmetrics{ 'phpmetrics': target_dir => '/usr/local/bin', force_update => false, user => $default_user }
 
 # PHANTOMJS
-::phantomjs { 'phantomjs': package_version => '2.1.1', force_update => false, user => $default_user }
+# ::phantomjs { 'phantomjs': package_version => '2.1.1', force_update => false, user => $default_user }
 
 
 #TODO: install java?
