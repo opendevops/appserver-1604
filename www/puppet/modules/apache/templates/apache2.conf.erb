@@ -192,6 +192,32 @@ AccessFileName .htaccess
 
 
 #
+# * Set caching on images & fonts for 11 months, css & jss x 1 week
+# * Don't cache pdf because they are dynamically created and can change
+#
+<IfModule mod_expires.c>
+  ExpiresActive On
+  #ExpiresDefault "access plus 1 day"
+  ExpiresByType image/jpg "access plus 11 month"
+  ExpiresByType image/jpeg "access plus 11 month"
+  ExpiresByType image/gif "access plus 11 month"
+  ExpiresByType image/png "access plus 11 month"
+  ExpiresByType image/x-icon "access plus 11 month"
+  ExpiresByType image/svg+xml "access plus 11 month"
+  ExpiresByType application/x-font-ttf "access plus 11 month"
+  ExpiresByType application/x-font-truetype "access plus 11 month"
+  ExpiresByType application/x-font-opentype "access plus 11 month"
+  ExpiresByType application/font-woff "access plus 11 month"
+  ExpiresByType application/font-woff2 "access plus 11 month"
+  ExpiresByType application/vnd.ms-fontobject "access plus 11 month"
+  ExpiresByType application/font-sfnt "access plus 11 month"
+  #ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType text/x-javascript "access plus 1 week"
+</IfModule>
+
+
+#
 # The following directives define some format nicknames for use with
 # a CustomLog directive.
 #

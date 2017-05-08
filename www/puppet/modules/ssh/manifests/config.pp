@@ -36,7 +36,8 @@
 # Copyright 2016 Matthew Hansen
 #
 define ssh::config (
-  $permitRootLogin = 'PermitRootLogin no'
+  $permitRootLogin        = 'no',
+  $passwordAuthentication = 'no',
 ) {
 
   # add a notify to the file resource

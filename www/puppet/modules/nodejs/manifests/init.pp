@@ -51,7 +51,7 @@ class nodejs () {
   # Use update-alternatives to ensure the node executable is available
   # http://stackoverflow.com/a/24592328
   # sudo update-alternatives --install /usr/bin/node nodejs /usr/bin/nodejs 100
-  exec { 'update_alternatives_nodejs':
+  exec { 'nodejs_update_alternatives':
     path     => '/bin:/usr/bin',
     command  => 'update-alternatives --install /usr/bin/node nodejs /usr/bin/nodejs 100',
     require => Package['nodejs']

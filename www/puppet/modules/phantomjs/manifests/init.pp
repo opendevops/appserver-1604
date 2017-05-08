@@ -34,52 +34,79 @@
 # Copyright 2016 Matthew Hansen
 #
 define phantomjs (
-  $package_version = '1.9.7',
-  $source_url = undef,
-  $source_dir = '/opt',
-  $install_dir = '/usr/local/bin',
-  $force_update = false,
-  $timeout = 300,
-  $user = 'vagrant',
-
+  $package_version = '1.9.8',
+  $target_dir      = '/opt',
+  $install_dir     = '/usr/local/bin',
+  $force_update    = false,
+  $timeout         = 90,
 ) {
 
+
   $packages = [
-    Package['curl'],
+    # Package['curl'],
     Package['bzip2'],
     Package['libfontconfig1']
   ]
 
-  $pkg_src_url = $source_url ? {
-    # see https://github.com/Medium/phantomjs#deciding-where-to-get-phantomjs
-    undef   => "https://cnpmjs.org/mirrors/phantomjs/phantomjs-${package_version}-linux-${::hardwaremodel}.tar.bz2",
-    # undef   => "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-${package_version}-linux-${::hardwaremodel}.tar.bz2",
-    # undef   => "https://repo1.maven.org/maven2/com/github/klieber/phantomjs/1.9.8/phantomjs-1.9.8-linux-x86_64.tar.bz2",
 
-    default => $source_url,
+  $s3_folder = "${project::bucket}/phantomjs/$package_version"
+  $phantomjs_file = "phantomjs.tar.bz2"
+
+  $source = "$s3_folder/$phantomjs_file"
+  $target = "$target_dir/$phantomjs_file"
+
+  # download phantomjs from s3
+  exec { 'download-phantomjs':
+    # don't run if file already exists
+    unless  => "test -f $target_dir/phantomjs",
+    command => "/usr/local/bin/aws s3 cp s3://$source $target --profile build_script",
+    #user    => $project::user,
+    # dont run if phantomjs_file file exist
+    creates => "$target_dir/$phantomjs_file",
+    timeout => $timeout,
+    require => Exec['install-aws-cli'],
   }
 
-  exec { 'get phantomjs':
-    command => "/usr/bin/curl --silent --show-error --fail --location ${pkg_src_url} --output ${source_dir}/phantomjs.tar.bz2 \
-      && mkdir ${source_dir}/phantomjs \
-      && tar --extract --file=${source_dir}/phantomjs.tar.bz2 --strip-components=1 --directory=${source_dir}/phantomjs",
-    creates => "${source_dir}/phantomjs/",
-    require => $packages,
-    timeout => $timeout
+  exec { 'create-phantomjs-folder':
+    command => "mkdir ${target_dir}/phantomjs",
+    user    => 'root',
+    creates => "${target_dir}/phantomjs",
+    require => Exec['download-phantomjs'],
+  }
+
+  # extract compressed file
+  $tar_file = "--file=${target_dir}/phantomjs.tar.bz2"
+  $tar_directory = "--directory=${target_dir}/phantomjs"
+  exec { 'extract-phantomjs':
+    unless  => "test -f $target_dir/phantomjs/bin/phantomjs",
+    cwd     => $xero_folder,
+    # eg. tar --extract --file=/opt/phantomjs.tar.bz2 --strip-components=1 --directory=/opt/phantomjs
+    command => "tar --extract $tar_file --strip-components=1 $tar_directory",
+    user    => 'root',
+    creates => "$target_dir/phantomjs/bin/phantomjs",
+    timeout => $timeout,
+    require => [$packages, Exec['create-phantomjs-folder']],
   }
 
   file { "${install_dir}/phantomjs":
     ensure => link,
-    owner  => $user,
-    target => "${source_dir}/phantomjs/bin/phantomjs",
+    owner  => $project::user,
+    target => "$target_dir/phantomjs/bin/phantomjs",
     force  => true,
   }
 
+  #
+  # * only remove compressed file when we want to update phantomjs
+  #
   if $force_update {
-    exec { 'remove phantomjs':
-      command => "/bin/rm -rf ${source_dir}/phantomjs",
-      notify  => Exec[ 'get phantomjs' ]
+    # remove compressed file
+    exec { 'remove-phantomjs-compressed-file':
+      cwd     => $target_dir,
+      command => "/bin/rm -rf $target_dir/$phantomjs_file",
+      user    => 'root',
+      require => Exec['extract-phantomjs'],
+      notify  => Exec[ 'download-phantomjs' ],
     }
   }
-}
 
+}

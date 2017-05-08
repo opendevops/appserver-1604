@@ -1,0 +1,10 @@
+<%= @log_path %>/*.log {
+    hourly
+    rotate 365
+    notifempty
+    compress
+    <%= @delay_compress %>
+    missingok
+    dateext
+    su root adm
+}

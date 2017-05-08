@@ -31,15 +31,30 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
-class server () {
+class server (
+  $sudo_www_data = false
+) {
 
   exec { 'apt-update':
     path    => '/bin:/usr/bin',
     command => 'apt-get update',
+  }
+
+
+  if $sudo_www_data == true {
+    $sudoers_www_data = '%www-data   ALL=(ALL) NOPASSWD:ALL'
+  } else {
+    $sudoers_www_data = ''
+  }
+
+
+  # SUDOERS
+  file { '/etc/sudoers':
+    path    => "/etc/sudoers",
+    # mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    content => template('server/sudoers.erb'),
   }
 
 }

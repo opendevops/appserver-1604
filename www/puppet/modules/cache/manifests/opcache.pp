@@ -41,9 +41,12 @@ define cache::opcache (
 ) {
 
   # comment out validate_timestamps in dev environment and set validate_timestamps=0 in prod
-  $validate_timestamps = '#opcache.validate_timestamps=0'
-  if $prod_mode {
+  if $prod_mode == true {
+    # prod mode so validate_timestamps = 0
     $validate_timestamps = 'opcache.validate_timestamps=0'
+  } else {
+    # dev mode so comment out validate_timestamps
+    $validate_timestamps = '#opcache.validate_timestamps=0'
   }
 
 

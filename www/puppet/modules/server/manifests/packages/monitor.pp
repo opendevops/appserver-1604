@@ -29,10 +29,6 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
 class server::packages::monitor {
 
   $packages = [
@@ -44,6 +40,9 @@ class server::packages::monitor {
     'htop',
     # I/O monitoring
     'iotop',
+    # apachetop
+    'apachetop',
+
   ]
 
   package { $packages:

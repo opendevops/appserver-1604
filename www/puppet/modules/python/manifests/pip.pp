@@ -28,11 +28,15 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
-define python::pip ($project = $title, $user = 'vagrant') {
+define python::pip (
+  $project = $title
+) {
+
+  #
+  # * user
+  #
+  $user = $project::user
+
 
   # install php-fpm package
   package { 'python-dev':
@@ -44,6 +48,14 @@ define python::pip ($project = $title, $user = 'vagrant') {
   package { 'python-pip':
     require => Package['python'],
     ensure  => installed,
+  }
+  
+  # used to get interface name for monitor
+  exec { "netifaces":
+    path    => "/bin:/usr/bin:/usr/local/bin",
+    command => "pip install netifaces",
+    # require  => Package['python-pip'],
+    require => Package['python-pip'],
   }
 
   exec { "pip-upgrade":

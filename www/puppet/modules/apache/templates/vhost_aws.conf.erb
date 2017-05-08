@@ -1,0 +1,47 @@
+# for AWS Elastic Load Balancing domains + http to https redirect
+
+<VirtualHost *:80>
+ServerName <%= @domain %>
+
+  # Redirect HTTP traffic on my server to HTTPS on my load balancer
+  # https://aws.amazon.com/premiumsupport/knowledge-center/redirect-http-https-elb/
+  RewriteEngine On
+  RewriteCond %{HTTP:X-Forwarded-Proto} =http
+  RewriteRule . https://%{HTTP:Host}%{REQUEST_URI} [L,R=permanent]
+
+  ## Vhost docroot
+      DocumentRoot "<%= @document_root %>"
+
+  ## Directories, there should at least be a declaration for /var/www/appserver1604
+
+<Directory "<%= @document_root %>">
+    Options FollowSymlinks
+    AllowOverride All
+    Require all granted
+  </Directory>
+
+  # proxy fcgi module config for php-fpm
+  #<LocationMatch "^(.*\.php)$">
+#  ProxyPass fcgi://127.0.0.1:9000<%= @document_root %>
+  #</LocationMatch>
+
+  #<IfModule proxy_module>
+#  ProxyPassMatch ^/(.*\.php(/.*)?)$ fcgi://127.0.0.1:9000<%= @document_root %>/$1
+  #</IfModule>
+
+  <FilesMatch \.php$>
+    SetHandler "proxy:fcgi://127.0.0.1:9000"
+  </FilesMatch>
+
+  ## Logging
+  ErrorLog "<%= @apache_error_log %>"
+  ServerSignature Off
+  CustomLog "<%= @apache_access_log %>" combined
+
+  ## SetEnv/SetEnvIf for environment variables
+  SetEnv APP_ENV dev
+  SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+  ## Custom fragment
+#Redirect permanent / https://<%= @domain %>/
+</VirtualHost>

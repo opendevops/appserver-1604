@@ -1,4 +1,6 @@
-# = Class: apache::vhost
+# == Class: project::build
+#
+# Full description of class projects here.
 #
 # === Parameters
 #
@@ -21,102 +23,98 @@
 #
 # === Examples
 #
-#   include apache
-#   apache::vhost{ 'appserver1604':
-#     projectPath => '/vagrant/www/projects'
-#   }
+#  class { 'projects':
+#    servers  => [ 'pool.ntp.org', 'ntp.tools.company.com' ],
+#  }
 #
 # === Authors
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
 define apache::vhost (
-  # eg. appserver1604.dev
-  $project_name = $title,
-  $domain            = 'appserver.dev',
-  $projects_root     = '/vagrant/www/projects',
-  $project_path      = '/vagrant/www/projects/appserver',
-  $project_webroot   = '/vagrant/www/projects/appserver/web',
-  $symlinked_webroot = '/var/www/appserver',
-  # link or directory
-  # $ensure = 'link',
-  $ensure = 'directory',
-  $owner = 'vagrant',
-  $group = 'www-data',
+  # eg. www.test.dev
+  $domain         = $title,
+  # if this is set then use it as the vhost document_root eg. /var/www/user-manuals
+  $vhost_webroot  = '',
+  # eg. access.log
+  $access_log     = '',
+  # eg. error_log
+  $error_log      = '',
 ) {
 
-  # eg. www.appserver.dev
+
+  #
+  # * server_name - domain name, used in the vhost template
+  #
   $server_name = $domain
+
+
+  #
+  # * document_root - ensure it exists + vhost template uses it
   # eg. /var/www/healthkit
-  $document_root = $project_webroot
+  #
+  $document_root = $vhost_webroot
+  # if $vhost_webroot != '' {
+  #   $document_root = $vhost_webroot
+  # } else {
+  #   $document_root = "${::project::www_folder}/$www_folder"
+  # }
 
-
-  # Ensure project_path exists
-  if ! defined (File[$projects_root]) {
-    file { "$projects_root":
-      # path => $project_path,
-      ensure  => 'directory',
-      # recurse => true,
-      owner   => $owner,
-      group   => $group
-    }
-  }
-
-  # Ensure project_path/project_name exists
-  if ! defined (File["$project_path"]) {
-    file { "$project_path":
-      # path => $project_path,
-      ensure  => 'directory',
-      # recurse => true,
-      owner   => $owner,
-      group   => $group
-    }
+  # create document root folder
+  if !defined(Project::Tools::Mkdir[$document_root]) {
+    project::tools::mkdir { $document_root: mode => '0775' }
   }
 
 
-  # create vhost in sites-available
-  file { "/etc/apache2/sites-available/$project_name.conf":
-    ensure    => file,
-    path      => "/etc/apache2/sites-available/$project_name.conf",
-    content   => template('apache/vhost.conf.erb'),
-    require   => Package["apache2"],
-    subscribe => Package["apache2"],
-  }
-
-  # symlink apache site to the site-enabled directory
-  file { "/etc/apache2/sites-enabled/$project_name.conf":
-    ensure  => link,
-    target  => "/etc/apache2/sites-available/$project_name.conf",
-    require => File["/etc/apache2/sites-available/$project_name.conf"],
-    # notify => Service["apache2"],
-  }
-
-  # symlink apache site to the site-enabled directory
-  # if $symlinked_webroot and $project_webroot are different, for example
-  # $symlinked_webroot = '/var/www/dashboard' and $project_webroot = '/var/www/projects/dashboard'
-  # the domain will point to the '/var/www/dashboard' and point to '/var/www/projects/dashboard'
-  if $ensure == 'link' {
-    file { "$project_webroot":
-      ensure  => $ensure,
-      # path => "/var/www/$project_name",
-      path    => $symlinked_webroot,
-      target  => $project_webroot,
-      require => File["/etc/apache2/sites-available/$project_name.conf"],
-      # notify => Service["apache2"],
-    }
+  #
+  # * apache access log
+  #
+  if $access_log != '' {
+    # eg. access.log
+    $apache_access_log = $access_log
   } else {
+    # eg. /var/log/apache/www.healthkit.dev_access.log
+    $apache_access_log = "$project::apache_log_folder/${server_name}_access.log"
+  }
 
-    if ! defined (File[$project_webroot]) {
-      file { "$project_webroot":
-        ensure  => 'directory',
-        recurse => true,
-      }
+
+  #
+  # * error log
+  #
+  if $error_log != '' {
+    # eg. error.log
+    $apache_error_log = $error_log
+  } else {
+    # eg. /var/log/apache/www.healthkit.dev_access.log
+    $apache_error_log = "$project::apache_log_folder/${server_name}_error.log"
+  }
+
+
+  #
+  # * Sites available
+  #
+  # create vhost in sites-available
+  if !defined(File["/etc/apache2/sites-available/$server_name.conf"]) {
+    file { "/etc/apache2/sites-available/$server_name.conf":
+      ensure    => file,
+      path      => "/etc/apache2/sites-available/$server_name.conf",
+      content   => template("apache/vhost_$project::vhost.conf.erb"),
+      require   => Package["apache2"],
+      subscribe => Package["apache2"],
     }
+  }
 
+  #
+  # * Sites enabled
+  #
+  if !defined(File["/etc/apache2/sites-enabled/$server_name.conf"]) {
+    # symlink apache site to the site-enabled directory
+    file { "/etc/apache2/sites-enabled/$server_name.conf":
+      ensure  => link,
+      target  => "/etc/apache2/sites-available/$server_name.conf",
+      require => File["/etc/apache2/sites-available/$server_name.conf"],
+      notify  => Service["apache2"],
+    }
   }
 
 }

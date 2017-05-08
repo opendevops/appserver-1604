@@ -1,0 +1,7 @@
+## Jetbrains
+.idea/
+
+## Compressed
+*.zip
+
+*.stackdump

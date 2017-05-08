@@ -42,7 +42,7 @@ define mysql::user (
 ) {
 
   exec { "create-mysql_user-${username}":
-    command  => "mysql -e 'CREATE USER ${username}@${domain} IDENTIFIED BY ${user_password}' -uroot -p`cat /root/.passwd/db/mysql`",
+    command  => "mysql -e 'CREATE USER ${username}@${domain} IDENTIFIED BY \"${user_password}\"' -uroot -p`cat /root/.passwd/db/mysql`",
     provider => 'shell',
     path     => ['/bin', '/sbin', '/usr/bin' ],
     require  => Service["mysql"],

@@ -29,14 +29,11 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
 class server::packages::compression {
 
   $packages = [
     'zip',
+    'unzip',
     'bzip2',
   ]
 

@@ -1,0 +1,10 @@
+## Jetbrains
+.idea/
+
+## Compressed
+*.zip
+
+*.stackdump
+
+## Keys
+id_rsa.*

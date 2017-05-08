@@ -25,8 +25,8 @@
 #
 # include mysql
 # mysql::config { 'mysql_config': password => 'verystrongpassword' }
-# mysql::user { 'dbuser': password => 'strongpassword' }
-# mysql::database { 'appserver': user => 'dbuser' }
+# mysql::user { 'db_user': password => 'strongpassword' }
+# mysql::database { 'appserver': user => 'db_user' }
 #
 # === Authors
 #

@@ -29,52 +29,27 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
 define phpmetrics (
-  $target_dir       = '/usr/local/bin',
-  $command_name     = 'phpmetrics',
-  $user             = 'root',
-  $group            = undef,
-  $download_timeout = '0',
+  $target_dir      = "/usr/local/bin",
+  $version         = '2.0.0',
+  $phpmetrics_file = 'phpmetrics',
+  $timeout         = 60,
 ) {
 
-  include phpmetrics::params
+  $s3_folder = "$project::bucket/phpmetrics/$version"
+  $source = "$s3_folder/$phpmetrics_file.phar"
+  $target = "$target_dir/$phpmetrics_file"
 
-  $phpmetrics_target_dir = $target_dir ? {
-    '/usr/local/bin' => $::phpmetrics::params::target_dir,
-    default => $target_dir
-  }
-
-  $phpmetrics_command_name = $command_name ? {
-    'phpmetrics' => $::phpmetrics::params::command_name,
-    default => $command_name
-  }
-
-  $phpmetrics_user = $user ? {
-    'root' => $::phpmetrics::params::user,
-    default => $user
-  }
-
-  $target = $::phpmetrics::params::phar_location
-
-  $phpmetrics_full_path = "${phpmetrics_target_dir}/${phpmetrics_command_name}"
-
-  exec { 'phpmetrics-install':
-    command => "/usr/bin/wget --no-check-certificate -O ${phpmetrics_full_path} ${target}",
-    user    => $phpmetrics_user,
-    creates => $phpmetrics_full_path,
-    timeout => $download_timeout,
-  }
-
-  file { "${phpmetrics_target_dir}/${phpmetrics_command_name}":
-    ensure  => file,
-    owner   => $phpmetrics_user,
-    mode    => '0755',
-    group   => $group,
-    require => Exec['phpmetrics-install'],
+  # download phpmetrics from s3
+  exec { 'download-phpmetrics':
+    # don't run if file already exists
+    unless  => "test -f $target_dir/$phpmetrics_file",
+    command => "/usr/local/bin/aws s3 cp s3://$source $target --profile build_script",
+    #user    => $project::apache_user,
+    # dont run if phpmetrics file exists
+    creates => "$target_dir/$phpmetrics_file",
+    timeout => $timeout,
+    require => Exec['install-aws-cli'],
   }
 
 }

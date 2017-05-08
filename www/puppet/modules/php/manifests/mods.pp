@@ -59,9 +59,17 @@ define php::mods ($project = $title) {
     'php-opcache',
     # xml
     'php-xml',
+    # allows ZipArchive
+    'php7.0-zip',
+    # required for medicare adaptor
+    'php-soap',
     # required for PECL (to install mailparse)
     'php-pear',
     'php-dev',
+    # pdo_sqlite
+    'php-sqlite3',
+    # enable you to operate with the IMAP protocol, as well as the NNTP, POP3 and local mailbox access methods.
+    'php-imap',
   ]
 
   package { $modules:

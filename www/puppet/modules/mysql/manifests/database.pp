@@ -36,14 +36,12 @@
 #
 define mysql::database ($database_name = $title, $user) {
 
-  # source: https://github.com/alkivi-sas/puppet-mysql/tree/github/manifests
 
+  # eg.
+  # $db_user           = ''
+  # $db_password       = ''
   $charset = 'utf8'
 
-  # validate_string($user)
-  # validate_string($charset)
-  #
-  # mysql::user { $user: }
 
   exec { "create-database-${database_name}":
     command  => "mysql -e 'CREATE DATABASE ${database_name} character SET utf8; GRANT ALL on *.* to ${user}@localhost; FLUSH PRIVILEGES;' -uroot -p`cat /root/.passwd/db/mysql`",

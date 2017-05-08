@@ -43,17 +43,42 @@ class apache {
 
   # Install apache2 package
   package { 'apache2':
-    ensure => installed,
+    ensure  => installed,
     require => Exec['apt-update']
   }
 
 
   # mods
-  apache::mods{ 'apache_mods': }
+  apache::mods { 'apache_mods': }
+
+
+  #
+  # * Default vhost
+  #
 
   # delete purge /etc/apache2/sites-enabled/000-default.conf
   # http://docs.puppetlabs.com/references/latest/type.html#tidy.
-  tidy { "remove-000-default":
-    path    => "/etc/apache2/sites-enabled/000-default.conf",
+  # tidy { "remove-000-default":
+  #   path    => "/etc/apache2/sites-enabled/000-default.conf",
+  # }
+
+  #
+  # * redirect from non-www to www
+  #
+  if $project::redirect_to_www != '' {
+
+    $redirect_to_www = $project::redirect_to_www
+    $www_server_name = $project::www_server_name
+
+    if !defined(File["/etc/apache2/sites-available/000-default.conf"]) {
+      file { "/etc/apache2/sites-available/000-default.conf":
+        ensure    => file,
+        path      => "/etc/apache2/sites-available/000-default.conf",
+        content   => template("apache/000-default.conf.erb"),
+        require   => Package["apache2"],
+        subscribe => Package["apache2"],
+      }
+    }
   }
+
 }

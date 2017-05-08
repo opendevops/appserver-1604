@@ -36,88 +36,90 @@
 # Copyright 2016 Matthew Hansen
 #
 define users::home (
-  $user = $title,
-  $db_user = '',
+  $user        = $title,
+  $db_user     = '',
   $db_password = '',
 ) {
 
 
-  # .my.cnf for mysql database password
-  file { "/home/$user/.my.cnf":
-    ensure    => file,
-    owner    => "$user",
-    mode     => '0644',
-    path      => "/home/$user/.my.cnf",
-    content   => template('users/.my.cnf.erb'),
-    notify    => Service['mysql'],
-    require   => Package['mysql-server'],
+  if $project::mysql_enabled == true {
+    # .my.cnf for mysql database password
+    file { "/home/$user/.my.cnf":
+      ensure  => file,
+      owner   => "$user",
+      mode    => '0644',
+      path    => "/home/$user/.my.cnf",
+      content => template('users/.my.cnf.erb'),
+      notify  => Service['mysql'],
+      require => Package['mysql-server'],
+    }
   }
 
 
   file { "/home/$user/.bash_aliases":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.bash_aliases",
-    source   => 'puppet:///modules/users/home/.bash_aliases',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.bash_aliases",
+    source => 'puppet:///modules/users/home/.bash_aliases',
   }
 
   file { "/home/$user/.bash_git":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.bash_git",
-    source   => 'puppet:///modules/users/home/.bash_git',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.bash_git",
+    source => 'puppet:///modules/users/home/.bash_git',
   }
 
   file { "/home/$user/.bash_profile":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.bash_profile",
-    source   => 'puppet:///modules/users/home/.bash_profile',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.bash_profile",
+    source => 'puppet:///modules/users/home/.bash_profile',
   }
 
   file { "/home/$user/.bashrc":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.bashrc",
-    source   => 'puppet:///modules/users/home/.bashrc',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.bashrc",
+    source => 'puppet:///modules/users/home/.bashrc',
   }
 
   file { "/home/$user/.git-completion.bash":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.git-completion.bash",
-    source   => 'puppet:///modules/users/home/.git-completion.bash',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.git-completion.bash",
+    source => 'puppet:///modules/users/home/.git-completion.bash',
   }
 
   file { "/home/$user/.git-prompt.sh":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.git-prompt.sh",
-    source   => 'puppet:///modules/users/home/.git-prompt.sh',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.git-prompt.sh",
+    source => 'puppet:///modules/users/home/.git-prompt.sh',
   }
 
   # ScreenRC
   file { ".screenrc for $user":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.screenrc",
-    source   => 'puppet:///modules/users/home/.screenrc',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.screenrc",
+    source => 'puppet:///modules/users/home/.screenrc',
   }
 
   # Leaves out rdoc / ri files for Gems
   # see http://stackoverflow.com/questions/1381725/how-to-make-no-ri-no-rdoc-the-default-for-gem-install
   file { ".gemrc for $user":
-    ensure   => file,
-    owner    => "$user",
-    mode     => '0644',
-    path     => "/home/$user/.gemrc",
-    source   => 'puppet:///modules/users/home/.gemrc',
+    ensure => file,
+    owner  => "$user",
+    mode   => '0644',
+    path   => "/home/$user/.gemrc",
+    source => 'puppet:///modules/users/home/.gemrc',
   }
 }

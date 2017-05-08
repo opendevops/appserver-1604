@@ -29,10 +29,6 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
 class server::packages::security {
 
   $packages = [
@@ -47,6 +43,10 @@ class server::packages::security {
     'openssh-server',
     # secure requests
     'openssl',
+    # Linux rootkit scanner (http://www.chkrootkit.org/)
+    'chkrootkit',
+    # lynis - security auditing tool (https://cisofy.com/lynis/)
+    'lynis',
   ]
 
   package { $packages:

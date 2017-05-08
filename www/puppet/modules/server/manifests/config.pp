@@ -1,4 +1,4 @@
-# = Class: server::logrotate
+# = Class: server::log
 #
 # This class
 #
@@ -20,13 +20,13 @@ define server::config (
   # default: # net.ipv4.conf.all.secure_redirects = 1
   $secureRedirectsIpv4 = 'net.ipv4.conf.all.secure_redirects = 0',
   # weekly
-  $rotationInterval = 'weekly',
+  $rotation_interval = 'weekly',
   # 4
-  $rotateCount = '4',
+  $rotate_count = '4',
   # compress
   $compress = 'compress',
-  # default: ''
-  $delayCompress = 'deplaycompress',
+  # default: 'deplaycompress'
+  $delay_compress = '',
   # eg. Australia/Melbourne
   $timezone = '',
 ) {

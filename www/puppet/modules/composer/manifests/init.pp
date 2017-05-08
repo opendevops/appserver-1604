@@ -43,6 +43,14 @@ define composer (
   $download_timeout = '0',
 ) {
 
+  #
+  # * user
+  #
+  $user = $project::user
+
+  #
+  # * include params
+  #
   include composer::params
 
   $composer_target_dir = $target_dir ? {

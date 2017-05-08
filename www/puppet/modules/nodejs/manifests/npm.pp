@@ -26,27 +26,47 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
-define nodejs::npm ($project = $title) {
+define nodejs::npm (
+  $project = $title
+) {
 
 
   # install less - Compiled CSS
   # https://www.npmjs.com/package/less
   exec { 'install_less':
     command => 'npm install -g less',
-    creates => '/usr/local/lib/node_modules/less',
-
+    creates => "/usr/local/bin/lessc",
+    user    => 'root',
     require => Package['npm']
   }
 
-  # install uglifyjs - JavaScript parser, mangler/compressor and beautifier toolkit
-  # https://www.npmjs.com/package/uglify-js
+  #TODO: removing because there are errors: https://github.com/healthkit/server-build/issues/108
+  # # used for fe2 deploy
+  # # install minifier - JavaScript/css minifier using minifycss and minifyjs
+  # # https://github.com/fizker/minifier
+  # # https://www.npmjs.com/package/minifier
+  # exec { 'install_minifier':
+  #   command => 'npm install -g minifier',
+  #   creates => "/usr/local/bin/minify",
+  #   user    => 'root',
+  #   require => Package['npm']
+  # }
+
+  # symfony assetic compress js
+  # see http://symfony.com/doc/current/assetic/uglifyjs.html
   exec { 'install_uglifyjs':
-    command => 'npm install -g uglifyjs',
-    creates => '/usr/local/lib/node_modules/uglifyjs/',
+    command => 'npm install -g uglify-js',
+    creates => "/usr/local/bin/uglifyjs",
+    user    => 'root',
+    require => Package['npm']
+  }
+
+  # symfony assetic compress css
+  # see http://symfony.com/doc/current/assetic/uglifyjs.html#install-configure-and-use-uglifycss
+  exec { 'install_uglifycss':
+    command => 'npm install -g uglifycss',
+    creates => "/usr/local/bin/uglifycss",
+    user    => 'root',
     require => Package['npm']
   }
 
@@ -54,6 +74,8 @@ define nodejs::npm ($project = $title) {
   # https://www.npmjs.com/package/gulp
   exec { 'install_gulp':
     command => 'npm install -g gulp',
-    require => Package['npm']
+    creates => "/usr/local/bin/gulp",
+    user    => 'root',
+    require => Package['npm'],
   }
 }

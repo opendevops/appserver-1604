@@ -1,0 +1,10 @@
+<%= @log_path %>/monitored/*.log {
+    daily
+    rotate 365
+    notifempty
+    compress
+    <%= @delay_compress %>
+    missingok
+    dateext
+    su root adm
+}

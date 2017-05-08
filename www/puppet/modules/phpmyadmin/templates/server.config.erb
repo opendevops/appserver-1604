@@ -1,0 +1,17 @@
+<?php
+// disable errors within phpmyadmin
+error_reporting(0);
+
+// Ensure phpmyadmin uses SSL
+$cfg['ForceSSL'] = true;
+
+// Change this to whatever you like.
+$cfg['Servers'][$i]['verbose']       = '<%= @verbose %>';
+$cfg['Servers'][$i]['host']          = '<%= @host %>';
+$cfg['Servers'][$i]['port']          = '';
+$cfg['Servers'][$i]['connect_type']  = 'tcp';
+$cfg['Servers'][$i]['extension']     = 'mysqli';
+$cfg['Servers'][$i]['compress']      = FALSE;
+$cfg['Servers'][$i]['auth_type']     = 'cookie';
+$i++;
+?>

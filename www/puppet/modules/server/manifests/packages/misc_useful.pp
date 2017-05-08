@@ -43,9 +43,18 @@ class server::packages::misc_useful {
     # random password generator
     'pwgen',
     # simple MTA (mail transfer agent) and sendmail command provider which simply dumps your email output forward to SMTP service
-    'nullmailer',
-    # run 32bit programs in 64bit OS
+    #'nullmailer',
+    # tool for manipulating PDF documents (for online claiming provider agreement)
+    'pdftk',
+
+    # run 32bit programs in 64bit OS - ensure `dpkg --add-architecture i386 && apt-get update` has been run first
     'libc6-i386',
+
+    # required by medicare adaptor to avoid this error: libz.so.1: cannot open shared object file: No such file or directory
+    'zlib1g:i386',
+    # required by medicare adaptor to avoid this error: libstdc++.so.5: cannot open shared object file: No such file or directory
+    'libstdc++5:i386',
+
   ]
 
   package { $packages:

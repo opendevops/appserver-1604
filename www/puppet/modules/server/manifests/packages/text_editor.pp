@@ -29,10 +29,6 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
 class server::packages::text_editor {
 
   $packages = [

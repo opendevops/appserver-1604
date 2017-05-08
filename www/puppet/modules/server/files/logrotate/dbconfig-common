@@ -1,0 +1,9 @@
+/var/log/dbconfig-common/dbc.log {
+                monthly
+                rotate 12
+                compress
+                dateext
+                missingok
+                notifempty
+                create 600 root root
+}

@@ -54,6 +54,8 @@ define php::mailparse ($project = $title) {
   exec { 'define-have-mbstring':
     # path    => "/bin:/usr/bin",
     # user    => 'root',
+    # don't run this if mailparser is already installed
+    unless => "pecl info mailparse",
     command => "echo '#define HAVE_MBSTRING 1' | cat - /usr/include/php/20151012/ext/mbstring/libmbfl/mbfl/mbfilter.h > temp && mv temp /usr/include/php/20151012/ext/mbstring/libmbfl/mbfl/mbfilter.h",
     require => Package['php-dev'],
     # require => Exec['pear upgrade'],
@@ -61,6 +63,8 @@ define php::mailparse ($project = $title) {
   exec { 'undef-have-mbstring':
     # path    => "/bin:/usr/bin",
     # user    => 'root',
+    # don't run this if mailparser is already installed
+    unless => "pecl info mailparse",
     command => "echo '#undef HAVE_MBSTRING' | cat - /usr/include/php/20151012/ext/mbstring/libmbfl/mbfl/mbfilter.h > temp && mv temp /usr/include/php/20151012/ext/mbstring/libmbfl/mbfl/mbfilter.h",
     require => Exec['define-have-mbstring'],
   }

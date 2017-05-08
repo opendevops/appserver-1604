@@ -23,7 +23,7 @@
 #
 # === Examples
 #
-# users { "${defaultUser}": db_password => $dbPassword }
+# users { "${default_user}": db_password => $db_password }
 #
 # === Authors
 #

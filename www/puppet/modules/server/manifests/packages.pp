@@ -11,7 +11,7 @@
 #   logrotate
 #
 # [*misc_useful*]
-#   curl, git, pwgen, nullmailer, libc6-i386
+#   curl, git, pwgen, libc6-i386
 #
 # [*monitor*]
 #   helps to manage your log files
@@ -21,9 +21,6 @@
 #
 # [*text_editor*]
 #   nano, vim
-#
-# [*wkhtmltopdf*]
-#   WKHTMLTOPDF (test `wkhtmltopdf -V`, `wkhtmltoimage -V`)
 #
 # === Variables
 #
@@ -43,27 +40,26 @@
 #
 # Matthew Hansen
 #
-# === Copyright
-#
-# Copyright 2016 Matthew Hansen
-#
 define server::packages (
   $compression = true,
-  $logrotate   = true,
+  $log         = true,
   $misc_useful = true,
   $monitor     = true,
   $security    = true,
-  $testing     = true,
+  $fonts       = true,
   $text_editor = true,
-  $wkhtmltopdf = true,
 ) {
 
   if $compression {
     include server::packages::compression
   }
 
-  if $logrotate {
-    include server::packages::logrotate
+  if $fonts {
+    include server::packages::fonts
+  }
+
+  if $log {
+    include server::packages::log
   }
 
   if $monitor {
@@ -78,19 +74,7 @@ define server::packages (
     include server::packages::security
   }
 
-  if $testing {
-    include server::packages::testing
-  }
-
   if $text_editor {
     include server::packages::text_editor
   }
-
-  if $wkhtmltopdf {
-    package { 'wkhtmltopdf':
-      ensure  => latest,
-      require => Exec['apt-update'],
-    }
-  }
-
 }

@@ -1,0 +1,14 @@
+{
+  "name": "healthkit-cron",
+  "version": "0.1.0",
+  "author": "healthkit",
+  "summary": "Puppet module to add HealthKit cron to the server",
+  "license": "Apache 2.0",
+  "source": "https://github.com/healthkit/server-build",
+  "project_page": "https://github.com/healthkit/server-build",
+  "issues_url": "https://github.com/healthkit/server-build/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ]
+}
+
