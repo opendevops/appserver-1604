@@ -37,7 +37,6 @@
 define composer (
   $target_dir       = '/usr/local/bin',
   $command_name     = 'composer',
-  $user             = 'root',
   $auto_update      = true,
   $group            = undef,
   $download_timeout = '0',

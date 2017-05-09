@@ -11,7 +11,7 @@ $server_timezone   = 'Etc/UTC'
 #
 $cache_prod_mode = false
 $phpmyadmin_enabled = true
-$testing_enabled = true
+$testing_enabled = false
 $wkhtmltopdf_enabled = false
 $xdebug_enabled = true
 $sudo_www_data = true
@@ -66,11 +66,11 @@ Exec {
 class { 'server': sudo_www_data => $sudo_www_data }
 server::config { 'server_config': timezone => $server_timezone }
 server::packages { 'server_packages': }
-if $testing_enabled {
+if $testing_enabled == true {
   #
   # * PHANTOMJS
   #
-  ::phantomjs { 'phantomjs': package_version => '1.9.8', force_update => false }
+  # ::phantomjs { 'phantomjs': package_version => '1.9.8', force_update => false }
 }
 
 #
@@ -154,7 +154,7 @@ if $xdebug_enabled {
   #
   # * PHPMETRICS
   #
-  ::phpmetrics { 'phpmetrics': target_dir => '/usr/local/bin' }
+  # ::phpmetrics { 'phpmetrics': target_dir => '/usr/local/bin' }
 }
 
 #
@@ -199,7 +199,7 @@ include ruby
 #
 # * AWS CLI
 #
-include aws
+#include aws
 
 
 #
