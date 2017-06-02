@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "private_network", :ip => '192.168.56.99'
 
   # Provider-specific configuration so you can fine-tune various backing providers for Vagrant.
-  config.vm.provider 'vmware_desktop' do |v|
+  config.vm.provider 'virtualbox' do |v|
     v.name = 'appserver-1604'
     v.customize ['modifyvm', :id, '--cpuexecutioncap', '70']
     v.memory = 2048
