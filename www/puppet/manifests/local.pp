@@ -55,10 +55,10 @@ include xdebug
 xdebug::config { 'local_xdebug': default_enable => 1, profiler_enable => 1, remote_port => 9000 }
 
 # MYSQL - install and start mysql + set root password
-include mysql
-mysql::config { 'mysql_config': password => $db_root_password }
-mysql::user { $db_user: user_password => $db_password, root_password => $db_root_password }
-mysql::database { $db_names: user => $db_user }
+  include mysql
+  mysql::config { 'mysql_config': password => $db_root_password }
+  mysql::user { $db_user: user_password => $db_password }
+  mysql::database { $db_names: user => $db_user }
 
 # NODE - install and configure nodejs
 include nodejs

@@ -1,0 +1,76 @@
+# Define the line ending behavior of the different file extensions
+# Set default behaviour, in case users don't have core.autocrlf set.
+* text=auto
+text eol=lf
+
+# Explicitly declare text files we want to always be normalized and converted
+# to native line endings on checkout.
+*.php text
+*.default text
+*.ctp text
+*.sql text
+*.md text
+*.po text
+*.js text
+*.css text
+*.ini text
+*.properties text
+*.txt text
+*.xml text
+*.yml text
+.htaccess text
+*.sh text
+*.bash text
+Vagrantfile text
+*.pp text
+*.erb text
+fstab-local text
+.bash_aliases text
+.bash_git text
+.bash_profile text
+.bashrc text
+.gemrc text
+.screenrc text
+.vimrc text
+.gitattributes text
+.gitignore text
+
+# Declare files that will always have CRLF line endings on checkout.
+*.bat eol=crlf
+*.dll eol=crlf
+
+# Declare files that will always have LF line endings on checkout.
+*.pem eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.mo binary
+*.pdf binary
+*.phar binary
+*.zip binary
+*.bz2 binary
+*.tar binary
+*.lib binary
+wkhtmltopdf binary
+wkhtmltoimage binary
+*.tar.gz binary
+
+# IMAGES
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+
+# VIDEO
+*.mp4 binary
+*.ogg binary
+*.ogv binary
+*.webm binary
+
+
+# FONTS
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.svg binary
+*.ttf binary
+*.otf binary

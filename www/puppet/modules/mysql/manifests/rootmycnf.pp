@@ -1,4 +1,4 @@
-# = Class: mysql::user
+# = Class: mysql::config
 #
 # === Parameters
 #
@@ -30,19 +30,32 @@
 #
 # Matthew Hansen
 #
-define mysql::user (
-  $username      = $title,
-  $user_password = '',
-  $root_password = '',
-  $domain        = 'localhost'
+define mysql::rootmycnf (
+  $password  = '',
+  $db_host   = '',
+  $root_user = 'root',
 ) {
 
-  exec { "create-mysql_user-${username}":
-    command  => "mysql -e 'CREATE USER ${username}@${domain} IDENTIFIED BY \"${user_password}\"' -uroot -p`cat /root/.passwd/db/mysql`",
-    provider => 'shell',
-    path     => ['/bin', '/sbin', '/usr/bin' ],
-    require  => Service["mysql"],
-    unless   => "mysql -u${username} -p${user_password} -e ''",
-  }
 
+  if $project::mysql_enabled == true {
+    # .my.cnf for mysql database password
+    file { "/root/.my.cnf":
+      ensure  => file,
+      owner   => 'root',
+      mode    => '0644',
+      path    => '/root/.my.cnf',
+      content => template('mysql/.my.cnf.erb'),
+      notify  => Service['mysql'],
+      require => Package['mysql-server'],
+    }
+  } else {
+    # .my.cnf for mysql database password
+    file { "/root/.my.cnf":
+      ensure  => file,
+      owner   => 'root',
+      mode    => '0644',
+      path    => '/root/.my.cnf',
+      content => template('mysql/.my.cnf.erb'),
+    }
+  }
 }

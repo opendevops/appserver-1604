@@ -1,4 +1,4 @@
-# = Class: mysql::user
+# = Class: mysql::database
 #
 # === Parameters
 #
@@ -21,28 +21,23 @@
 #
 # === Examples
 #
-#   include apache
-#   apache::vhost{ 'appserver1604':
-#     projectPath => '/vagrant/www/projects'
-#   }
 #
-# === Authors
-#
-# Matthew Hansen
-#
-define mysql::user (
-  $username      = $title,
+define mysql::timezone (
+  $user          = $title,
   $user_password = '',
-  $root_password = '',
-  $domain        = 'localhost'
+  $domain        = 'localhost',
 ) {
 
-  exec { "create-mysql_user-${username}":
-    command  => "mysql -e 'CREATE USER ${username}@${domain} IDENTIFIED BY \"${user_password}\"' -uroot -p`cat /root/.passwd/db/mysql`",
+  #
+  # * Load the Time Zone Tables
+  #
+  # see https://dev.mysql.com/doc/refman/5.7/en/mysql-tzinfo-to-sql.html
+
+
+  exec { "mysql-timezone-${title}":
+    command  => "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u $user -h $domain mysql -p$user_password",
     provider => 'shell',
     path     => ['/bin', '/sbin', '/usr/bin' ],
-    require  => Service["mysql"],
-    unless   => "mysql -u${username} -p${user_password} -e ''",
+    require  => Exec["create-mysql_user-${user}"],
   }
-
 }
