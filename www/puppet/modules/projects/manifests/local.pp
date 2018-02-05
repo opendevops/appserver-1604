@@ -36,9 +36,9 @@
 # Copyright 2016 Opendevops
 #
 define projects::local(
-  # eg. appserver.dev
+  # eg. appserver.localdev
   $project_name      = $title,
-  # $domain            = 'www.appserver1604.dev',
+  # $domain            = 'www.appserver1604.localdev',
   $projects_root     = '/vagrant/www/projects',
   # $project_path      = '/vagrant/www/projects/appserver',
   # $project_webroot   = '/vagrant/www/projects/appserver/web',
@@ -49,24 +49,24 @@ define projects::local(
   $branch            = 'master',
 ) {
 
-  apache::vhost { 'appserver1604.dev':
-    domain            => 'appserver1604.dev',
+  apache::vhost { 'appserver1604.localdev':
+    domain            => 'appserver1604.localdev',
     project_webroot   => "$projects_root/appserver/web",
     project_path      => "$projects_root/appserver",
     projects_root     => $projects_root,
     ensure            => 'directory',
   }
 
-  apache::vhost { 'www.invoice.dev':
-    domain            => 'www.invoice.dev',
+  apache::vhost { 'www.invoice.localdev':
+    domain            => 'www.invoice.localdev',
     project_webroot   => "$projects_root/apps/invoice",
     project_path      => "$projects_root/apps/invoice",
     projects_root     => $projects_root,
     ensure            => 'directory',
   }
 
-  apache::vhost { 'www.angular4.dev':
-    domain            => 'www.angular4.dev',
+  apache::vhost { 'www.angular4.localdev':
+    domain            => 'www.angular4.localdev',
     project_webroot   => "$projects_root/study/angular4",
     project_path      => "$projects_root/study/angular4",
     projects_root     => $projects_root,
@@ -75,31 +75,31 @@ define projects::local(
 
 
   #
-  # apache::vhost { 'www.dashboard.dev':
-  #   domain            => 'www.dashboard.dev',
+  # apache::vhost { 'www.dashboard.localdev':
+  #   domain            => 'www.dashboard.localdev',
   #   project_webroot   => "$projects_root/dashboard/ui-angular2/dist/prod",
   #   project_path      => "$projects_root/dashboard/ui-angular2",
   #   projects_root     => $projects_root,
   #   ensure            => 'directory',
   # }
   #
-  # apache::vhost { 'api.hiphiparray.dev':
-  #   domain            => 'api.hiphiparray.dev',
+  # apache::vhost { 'api.hiphiparray.localdev':
+  #   domain            => 'api.hiphiparray.localdev',
   #   project_webroot   => "$projects_root/hiphiparray/api-symfony3/web",
   #   project_path      => "$projects_root/hiphiparray/api-symfony3",
   #   projects_root     => $projects_root,
   #   ensure            => 'directory',
   # }
   #
-  # apache::vhost { 'react.hiphiparray.dev':
-  #   domain            => 'react.hiphiparray.dev',
+  # apache::vhost { 'react.hiphiparray.localdev':
+  #   domain            => 'react.hiphiparray.localdev',
   #   project_webroot   => "$projects_root/hiphiparray/ui-react/public",
   #   project_path      => "$projects_root/hiphiparray/ui-react/public",
   #   projects_root     => $projects_root,
   #   ensure            => 'directory',
   # }
-  # apache::vhost { 'angular2.hiphiparray.dev':
-  #   domain            => 'angular2.hiphiparray.dev',
+  # apache::vhost { 'angular2.hiphiparray.localdev':
+  #   domain            => 'angular2.hiphiparray.localdev',
   #   project_webroot   => "$projects_root/hiphiparray/ui-angular2",
   #   project_path      => "$projects_root/hiphiparray/ui-angular2",
   #   projects_root     => $projects_root,
